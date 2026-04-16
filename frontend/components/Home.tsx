@@ -52,6 +52,17 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
   const [joinError, setJoinError] = useState("");
   const [toast, setToast] = useState<{ type: "error" | "success"; msg: string } | null>(null);
 
+  // Slideshow
+  const slides = ["/one.jpg", "/two.jpg", "/three.jpg", "/four.jpg"];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 20000);
+    return () => clearInterval(interval);
+  }, []);
+
   function showToast(type: "error" | "success", msg: string) {
     setToast({ type, msg });
     setTimeout(() => setToast(null), 4000);
@@ -121,7 +132,32 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
   const otherGroups = groups.filter(g => g.creator.toLowerCase() !== account.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen bg-[#0a0a0f] text-white relative">
+
+      {/* ── Slideshow Background ── */}
+      <div className="fixed inset-0 z-0">
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 2.5, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={slides[currentSlide]}
+              alt=""
+              fill
+              className="object-cover object-center opacity-60"
+              priority
+            />
+          </motion.div>
+        </AnimatePresence>
+        {/* Permanent dark overlay so content stays readable */}
+        <div className="absolute inset-0 bg-[#0a0a0f]/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/60 via-transparent to-[#0a0a0f]/80" />
+      </div>
 
       {/* Toast */}
       <AnimatePresence>
@@ -195,7 +231,7 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
       </AnimatePresence>
 
       {/* Header */}
-      <header className="border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur sticky top-0 z-40">
+      <header className="border-b border-white/5 bg-[#0a0a0f]/60 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="arCircle" width={28} height={28} className="rounded-lg" />
@@ -219,16 +255,45 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+      <main className="relative z-10 max-w-3xl mx-auto px-4 py-8 space-y-8">
+
+        {/* Slide indicators */}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === currentSlide
+                  ? "w-6 h-1.5 bg-violet-400"
+                  : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
 
         {/* Welcome banner */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-violet-600/20 to-indigo-600/10 border border-violet-500/20 rounded-2xl p-6"
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl"
         >
           <p className="text-gray-400 text-sm">Welcome back</p>
-          <p className="text-white font-bold text-xl mt-1">{account.slice(0, 8)}...{account.slice(-6)}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-white font-bold text-xl">
+              {(() => { try { const u = localStorage.getItem("arcircle_usernames"); if (u) { const m = JSON.parse(u); return m[account.toLowerCase()] || `${account.slice(0, 8)}...${account.slice(-6)}`; } } catch {} return `${account.slice(0, 8)}...${account.slice(-6)}`; })()}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-gray-600 text-xs font-mono">{account.slice(0, 10)}...{account.slice(-6)}</p>
+            <button
+              onClick={() => { navigator.clipboard.writeText(account); }}
+              className="text-gray-600 hover:text-violet-400 transition-colors text-xs"
+              title="Copy address"
+            >
+              📋
+            </button>
+          </div>
           <div className="flex items-center gap-4 mt-4">
             <div>
               <p className="text-gray-500 text-xs">Your Circles</p>
@@ -256,7 +321,7 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="bg-[#111118] border border-white/8 rounded-2xl p-6">
+              <div className="bg-[#111118]/80 backdrop-blur-md border border-white/8 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-white font-semibold">Create a New Circle</h2>
                   <button onClick={() => setShowForm(false)} className="text-gray-500 hover:text-white text-lg transition-colors">✕</button>
@@ -323,7 +388,7 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
               {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
             </div>
           ) : otherGroups.length === 0 && myGroups.length === 0 ? (
-            <div className="bg-[#111118] border border-white/5 rounded-2xl p-12 text-center">
+            <div className="bg-white/5 backdrop-blur-md border border-white/8 rounded-2xl p-12 text-center">
               <Image src="/logo.png" alt="arCircle" width={56} height={56} className="rounded-2xl mx-auto mb-4" />
               <p className="text-white font-semibold">No circles yet</p>
               <p className="text-gray-500 text-sm mt-1">Be the first to create a savings circle</p>
@@ -335,7 +400,7 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
               </button>
             </div>
           ) : otherGroups.length === 0 ? (
-            <div className="bg-[#111118] border border-white/5 rounded-2xl p-8 text-center">
+            <div className="bg-white/5 backdrop-blur-md border border-white/8 rounded-2xl p-8 text-center">
               <p className="text-gray-500 text-sm">No other circles available</p>
             </div>
           ) : (
@@ -360,7 +425,7 @@ function GroupCard({ g, account, onClick, index }: { g: Group; account: string; 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       onClick={onClick}
-      className="w-full bg-[#111118] hover:bg-[#15151f] border border-white/5 hover:border-violet-500/30 rounded-2xl p-5 text-left transition-all group"
+      className="w-full bg-white/5 hover:bg-white/8 backdrop-blur-md border border-white/8 hover:border-violet-500/30 rounded-2xl p-5 text-left transition-all group shadow-lg"
     >
       <div className="flex items-start justify-between mb-4">
         <div>
