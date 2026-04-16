@@ -236,12 +236,12 @@ export default function GroupDashboard({ groupId, account, onBack, onDisconnect 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
 
         {/* Header */}
-        <div className="flex items-center gap-3 pt-2">
-          <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">← Back</button>
+        <div className="flex items-center gap-2 pt-2 flex-wrap">
+          <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1 shrink-0">← Back</button>
           <span className="text-gray-700">|</span>
-          <h1 className="text-white font-bold text-lg">{group.name}</h1>
-          <div className="ml-auto flex items-center gap-2">
-            <span className={`text-xs px-2 py-1 rounded-full ${group.active ? "bg-green-500/20 text-green-300" : "bg-gray-500/20 text-gray-400"}`}>
+          <h1 className="text-white font-bold text-base truncate max-w-[140px] sm:max-w-xs">{group.name}</h1>
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${group.active ? "bg-green-500/20 text-green-300" : "bg-gray-500/20 text-gray-400"}`}>
               {group.active ? "Active" : "Completed"}
             </span>
             <WalletButton account={account} onDisconnect={onDisconnect} />
@@ -263,9 +263,9 @@ export default function GroupDashboard({ groupId, account, onBack, onDisconnect 
             { label: "Current Round", value: `${group.currentRound} of ${group.memberCount}` },
             { label: "Pot This Round", value: `${(parseFloat(group.contributionAmount) * group.memberCount).toFixed(2)} USDC` },
           ].map((s) => (
-            <div key={s.label} className="bg-[#111118] border border-white/5 rounded-2xl p-4 text-center">
+            <div key={s.label} className="bg-[#111118] border border-white/5 rounded-2xl p-3 text-center">
               <p className="text-gray-500 text-xs">{s.label}</p>
-              <p className="text-white font-bold mt-1">{s.value}</p>
+              <p className="text-white font-bold mt-1 text-sm break-words">{s.value}</p>
             </div>
           ))}
         </div>
@@ -296,21 +296,21 @@ export default function GroupDashboard({ groupId, account, onBack, onDisconnect 
             {members.map((m) => {
               const isCurrentRound = m.position === group.currentRound;
               return (
-              <div key={m.address} className={`flex items-center justify-between p-3 rounded-xl transition-colors ${isCurrentRound ? "bg-violet-500/10 border border-violet-500/20" : "hover:bg-white/3"}`}>
-                <div>
-                  <p className="text-white text-sm">
-                    {m.address.slice(0, 8)}...{m.address.slice(-4)}
-                    {m.address.toLowerCase() === account.toLowerCase() && <span className="text-violet-400 text-xs ml-2">(you)</span>}
-                    {m.address.toLowerCase() === group.creator.toLowerCase() && <span className="text-yellow-400 text-xs ml-2">👑</span>}
-                    {isCurrentRound && <span className="text-violet-300 text-xs ml-2">🎯 receiving this round</span>}
+              <div key={m.address} className={`flex items-start justify-between p-3 rounded-xl transition-colors gap-2 ${isCurrentRound ? "bg-violet-500/10 border border-violet-500/20" : "hover:bg-white/3"}`}>
+                <div className="min-w-0">
+                  <p className="text-white text-sm flex flex-wrap items-center gap-1">
+                    <span className="truncate max-w-[120px] sm:max-w-none">{m.address.slice(0, 8)}...{m.address.slice(-4)}</span>
+                    {m.address.toLowerCase() === account.toLowerCase() && <span className="text-violet-400 text-xs">(you)</span>}
+                    {m.address.toLowerCase() === group.creator.toLowerCase() && <span className="text-yellow-400 text-xs">👑</span>}
+                    {isCurrentRound && <span className="text-violet-300 text-xs">🎯 receiving</span>}
                   </p>
-                  <p className="text-gray-600 text-xs mt-0.5">
-                    Position #{m.position} · receives {(parseFloat(group.contributionAmount) * group.memberCount).toFixed(2)} USDC on round {m.position}
+                  <p className="text-gray-600 text-xs mt-0.5 truncate">
+                    Position #{m.position} · round {m.position}
                   </p>
-                  {m.status === 2 && <p className="text-gray-600 text-xs mt-0.5">Collateral locked: {m.collateralBalance} USDC</p>}
+                  {m.status === 2 && <p className="text-gray-600 text-xs mt-0.5">Collateral: {m.collateralBalance} USDC</p>}
                 </div>
-                <div className="flex items-center gap-2">
-                  {m.hasContributed && <span className="text-xs text-green-400">✓ Paid</span>}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {m.hasContributed && <span className="text-xs text-green-400">✓</span>}
                   <span className={`text-xs font-medium ${STATUS_COLOR[m.status]}`}>
                     {STATUS_LABEL[m.status]}
                   </span>
@@ -334,10 +334,10 @@ export default function GroupDashboard({ groupId, account, onBack, onDisconnect 
             </h2>
 
             {/* Invite link */}
-            <div className="bg-white/3 border border-white/5 rounded-xl p-3 flex items-center justify-between gap-3">
-              <div>
+            <div className="bg-white/3 border border-white/5 rounded-xl p-3 flex items-center justify-between gap-2">
+              <div className="min-w-0">
                 <p className="text-violet-300 text-xs">Invite Link</p>
-                <p className="text-white text-xs font-mono mt-0.5 truncate max-w-[200px]">
+                <p className="text-white text-xs font-mono mt-0.5 truncate max-w-[160px] sm:max-w-[200px]">
                   {typeof window !== "undefined" ? `${window.location.origin}?group=${groupId}` : ""}
                 </p>
               </div>

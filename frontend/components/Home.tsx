@@ -232,24 +232,32 @@ export default function Home({ account, onSelectGroup, onDisconnect }: Props) {
 
       {/* Header */}
       <header className="border-b border-white/5 bg-[#0a0a0f]/60 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Image src="/logo.png" alt="arCircle" width={28} height={28} className="rounded-lg" />
-            <span className="font-bold text-white">arCircle</span>
+            <span className="font-bold text-white text-sm">arCircle</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
             <WalletButton account={account} onDisconnect={onDisconnect} />
+            <a
+              href="https://faucet.circle.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 flex items-center gap-1 border border-green-500/20 bg-green-500/10 hover:bg-green-500/20 text-green-400 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap"
+            >
+              💧 <span className="hidden sm:inline">Faucet</span>
+            </a>
             <button
               onClick={() => setShowJoin(true)}
-              className="border border-white/10 hover:border-violet-500/50 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+              className="shrink-0 border border-white/10 hover:border-violet-500/50 text-gray-300 hover:text-white px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap"
             >
-              Join Circle
+              Join
             </button>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:shadow-lg hover:shadow-violet-500/20"
+              className="shrink-0 bg-violet-600 hover:bg-violet-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap"
             >
-              + New Circle
+              + Circle
             </button>
           </div>
         </div>

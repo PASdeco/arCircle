@@ -147,7 +147,7 @@ export default function WalletButton({ account, onConnect, onDisconnect }: Props
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 mt-2 w-72 bg-[#111118] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
+              className="fixed sm:absolute right-0 sm:right-0 top-16 sm:top-auto sm:mt-2 left-2 right-2 sm:left-auto sm:w-72 bg-[#111118] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
             >
               {/* Address + copy */}
               <div className="px-4 py-3 border-b border-white/5">

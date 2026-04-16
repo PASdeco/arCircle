@@ -144,6 +144,9 @@ export default function LandingPage() {
                 {["How it works", "Features", "Why arCircle", "Use Cases"][i]}
               </a>
             ))}
+            <button onClick={() => { setMenuOpen(false); setAuthModal("login"); }} className="block w-full text-center border border-white/10 hover:border-violet-500/30 text-gray-300 hover:text-white font-semibold px-5 py-2.5 rounded-xl transition-colors">
+              Login
+            </button>
             <button onClick={() => { setMenuOpen(false); setAuthModal("main"); }} className="block w-full text-center bg-violet-600 hover:bg-violet-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors">
               {account ? "Open App" : "Get Started"}
             </button>
@@ -192,6 +195,10 @@ export default function LandingPage() {
               <button onClick={() => setAuthModal("main")} className="bg-violet-600 hover:bg-violet-500 text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25 text-base">
                 Get Started →
               </button>
+              <a href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 hover:border-green-500/40 text-green-400 hover:text-green-300 font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 text-base backdrop-blur-sm">
+                💧 Get Faucet
+              </a>
               <button onClick={() => setAuthModal("main")} className="bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105 text-base backdrop-blur-sm">
                 Create a Circle
               </button>
